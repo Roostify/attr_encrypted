@@ -343,7 +343,7 @@ module AttrEncrypted
     #  @user.encrypt(:email, 'test@example.com')
     def encrypt(attribute, value)
       encrypted_attributes[attribute.to_sym][:operation] = :encrypting
-      encrypted_attributes[attribute.to_sym][:value_present] = (value && !value.empty?)
+      encrypted_attributes[attribute.to_sym][:value_present] = (value && not_empty?(value))
       self.class.encrypt(attribute, value, evaluated_attr_encrypted_options_for(attribute))
     end
 
@@ -355,6 +355,10 @@ module AttrEncrypted
     end
 
     protected
+
+      def not_empty?(value)
+        !value.nil? && !(value.is_a?(String) && value.empty?)
+      end
 
       # Returns attr_encrypted options evaluated in the current object's scope for the attribute specified
       def evaluated_attr_encrypted_options_for(attribute)
